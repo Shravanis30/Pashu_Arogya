@@ -118,11 +118,5 @@ app.get("/state/:state_id", async (req, res) => {
   }
 });
 
-// // --- Start server ---
-// app.listen(port, () => {
-//   console.log(`Server running at http://localhost:${port}`);
-// });
-
-// Export the app instance (as requested, though typically not needed if app.listen is used)
 export { app };
 
