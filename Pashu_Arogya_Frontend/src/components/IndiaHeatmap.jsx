@@ -8,15 +8,17 @@ import axios from "axios";
 
 const PROJECTION_CONFIG = { scale: 350, center: [78.9629, 22.5937] };
 const DEFAULT_COLOR = "#f2f2f2"; // Light Gray/White for default
-const colorScale = scaleLinear().domain([0, 100]).range(["#b8d6f9", "#d73027"]); 
+const colorScale = scaleLinear().domain([0, 100]).range(["#b8d6f9", "#d73027"]);
 
 // Helper function to get the current data endpoint
 const getApiUrl = (regionId) => {
-    // 🛑 CRITICAL FIX: Base URL must be the port of the running Express app (8000), not 5000.
-    const BASE_URL = "http://localhost:8000"; 
-    return regionId === "All"
-        ? `${BASE_URL}/states`
-        : `${BASE_URL}/state/${regionId}`;
+  // 🛑 CRITICAL FIX: Base URL must be the port of the running Express app (8000), not 5000.
+  // const BASE_URL = "http://localhost:8000"; 
+  const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+
+  return regionId === "All"
+    ? `${BASE_URL}/states`
+    : `${BASE_URL}/state/${regionId}`;
 };
 
 function IndiaHeatmap() {
@@ -29,23 +31,23 @@ function IndiaHeatmap() {
   // Fetch data from local Express server
   const fetchData = async (stateId) => {
     try {
-        const url = getApiUrl(stateId);
-        // Use the correct port 8000 (where the proxy is mounted via src/app.js)
-        const response = await axios.get(url); 
-        
-        const result = response.data;
-        const parsed = Array.isArray(result) ? result : (result ? [result] : []);
+      const url = getApiUrl(stateId);
+      // Use the correct port 8000 (where the proxy is mounted via src/app.js)
+      const response = await axios.get(url);
 
-        setData(parsed);
-        setLoading(false);
-        
-        if (stateId === "All" && statesList.length === 0) {
-            setStatesList(parsed.map(item => ({ id: item.id, state: item.state })));
-        }
+      const result = response.data;
+      const parsed = Array.isArray(result) ? result : (result ? [result] : []);
+
+      setData(parsed);
+      setLoading(false);
+
+      if (stateId === "All" && statesList.length === 0) {
+        setStatesList(parsed.map(item => ({ id: item.id, state: item.state })));
+      }
     } catch (error) {
-        // Log the error response details
-        console.error("Error fetching map data:", error.message, error.response?.status);
-        setLoading(false);
+      // Log the error response details
+      console.error("Error fetching map data:", error.message, error.response?.status);
+      setLoading(false);
     }
   };
 
@@ -63,7 +65,7 @@ function IndiaHeatmap() {
   const onMouseLeave = () => {
     setTooltipContent("");
   };
-  
+
   if (loading) return <div className="text-center p-10">Loading map data...</div>;
 
 

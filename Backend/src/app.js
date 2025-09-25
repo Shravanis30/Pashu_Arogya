@@ -22,16 +22,12 @@
 //   credentials: true,
 // }));
 
-
-
-
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
-
-
 // export { app };
+
 
 
 
@@ -52,7 +48,7 @@ app.use(express.json());
 // --- AWS Credentials (MANDATORY: Load from Environment Variables) ---
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-const AWS_REGION = "eu-north-1";
+const AWS_REGION = process.env.AWS_REGION;
 
 // --- Lambda host ---
 const LAMBDA_HOST = process.env.LAMBDA_HOST_KEY;
@@ -103,6 +99,8 @@ app.get("/states", async (req, res) => {
     const data = await signedFetch("/api/country/in");
     res.json(data);
   } catch (err) {
+    // CRITICAL FIX: Log the actual error object to the console
+    console.error("Error calling Lambda for /states:", err); 
     res.status(500).json({ error: "Failed to fetch all states data." });
   }
 });
@@ -114,20 +112,17 @@ app.get("/state/:state_id", async (req, res) => {
     const data = await signedFetch("/api/state", "GET", null, { state_id: stateId });
     res.json(data);
   } catch (err) {
+    // CRITICAL FIX: Log the actual error object for the state route too
+    console.error(`Error calling Lambda for state ${req.params.state_id}:`, err);
     res.status(500).json({ error: `Failed to fetch data for state ${req.params.state_id}.` });
   }
 });
 
-// --- Start server ---
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// // --- Start server ---
+// app.listen(port, () => {
+//   console.log(`Server running at http://localhost:${port}`);
+// });
 
 // Export the app instance (as requested, though typically not needed if app.listen is used)
 export { app };
 
-/*
-    *** IMPORTANT ***
-    To run this file in Node.js, you must add "type": "module" 
-    to your package.json file.
-*/

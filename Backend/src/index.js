@@ -34,15 +34,37 @@ dotenv.config({
 const port = process.env.PORT || 8000;
 
 // Connect to MongoDB
+// connectDB()
+// .then(() => {
+//     // START THE SERVER ONLY AFTER DB CONNECTION IS SUCCESSFUL
+//     app.listen(port, () => {
+//         console.log(`Server running at http://localhost:${port}`);
+//     });
+// })
+// .catch((err) => {
+//     console.error("MONGO DB connection failed !!! ", err);
+// });
+
+// // The previous duplicate port listening code is REMOVED from here.
+
+
+// ... (rest of the code remains the same)
+
+// Connect to MongoDB
 connectDB()
 .then(() => {
     // START THE SERVER ONLY AFTER DB CONNECTION IS SUCCESSFUL
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
+    });
+
+    // 💡 IMPROVEMENT: Add listener for server errors (e.g., port conflict)
+    server.on('error', (err) => {
+        console.error("Server failed to start:", err.message);
+        // You might want to exit the process here:
+        // process.exit(1); 
     });
 })
 .catch((err) => {
     console.error("MONGO DB connection failed !!! ", err);
 });
-
-// The previous duplicate port listening code is REMOVED from here.
