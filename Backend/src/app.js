@@ -38,7 +38,12 @@ import { Sha256 } from "@aws-crypto/sha256-browser";
 import { HttpRequest } from "@aws-sdk/protocol-http";
 import fetch from "node-fetch"; // Assuming node-fetch is the polyfill used, which is common in Node environments
 import cors from "cors";
+import dotenv from "dotenv";
 
+
+dotenv.config({
+    path: './.env'
+})
 const app = express();
 const port = process.env.PORT || 3000;
 
