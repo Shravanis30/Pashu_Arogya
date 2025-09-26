@@ -13,7 +13,7 @@ const colorScale = scaleLinear().domain([0, 100]).range(["#b8d6f9", "#d73027"]);
 // Helper function to get the current data endpoint
 const getApiUrl = (regionId) => {
   // 🛑 CRITICAL FIX: Base URL must be the port of the running Express app (8000), not 5000.
-  const BASE_URL = "http://localhost:8000"; 
+  const BASE_URL = 'https://pashu-arogya.onrender.com'; 
   // const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 
   return regionId === "All"
